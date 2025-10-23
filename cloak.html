@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Cloak</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/b/bd/Color_icon_blue.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>p {
+  color: white;
+  font-family: Lato;
+}
+h1 {
+  color: white;
+  font-family: Lato;
+  text-align: center;
+}
+button {
+  background-color: #b3b7c4;
+  border-color: black;
+  color: #000c36;
+  font-family: Lato;
+  text-align: center;
+}
+button:hover {
+  background-color: #8e93a3;  
+}
+body {
+  background-color: #000c36;
+}</style>
+  </head>
+  <body>
+    <h1>Cloak</h1>
+    <hr>
+    <p>v2</p>
+<input 
+  type="text" 
+  id="input" 
+  value="https://gco-12345.github.io/panx/main" 
+  placeholder="https://gco-12345.github.io/panx/main" 
+  autofocus
+>
+    <button onclick="cloakedvt()">Click Here :)</button>
+    <script>function cloakedvt() {
+  var url = document.getElementById('input').value.trim();
+  if (!url) {
+    alert("Please try again");
+    return;
+  }
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+  var win = window.open('about:blank#blocked');
+  if (!win) {
+    alert("Popup blocked — please allow popups or open in a new tab.");
+    return;
+  }
+  win.document.body.style.margin = '0';
+  win.document.body.style.height = '100vh';
+  var iframe = win.document.createElement('iframe');
+  iframe.style.border = 'none';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.src = url;
+  win.document.body.appendChild(iframe);
+  window.location.replace("https://drive.google.com/drive/");
+}</script>
+  </body>
+</html>

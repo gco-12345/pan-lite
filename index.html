@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cloak — 49ers</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/b/bd/Color_icon_blue.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #000c36;
+      --card: #071033;
+      --muted: #b3b7c4;
+      --accent: #2b6df6;
+    }
+    html,body{height:100%;margin:0}
+    body{
+      font-family: "Lato", sans-serif;
+      background-color: var(--bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.04);
+      color: white;
+      padding: 28px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    }
+    h1{margin:0 0 8px 0;font-weight:700}
+    hr{border:none;height:1px;background:rgba(255,255,255,0.06);margin:14px 0 18px 0}
+    button.primary{
+      background-color: #b3b7c4;
+      border: 1px solid black;
+      color: #000c36;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight:700;
+      width:100%;
+      margin-top:6px;
+    }
+    button.primary:hover{ background-color: #8e93a3 }
+    #feedback{ margin-top:10px; color: rgba(255,255,255,0.85); min-height:1.2em; font-size:14px }
+  </style>
+</head>
+<body>
+  <div class="card" role="region" aria-labelledby="title">
+    <h1 id="title">Cloak</h1>
+    <hr>
+    <button class="primary" onclick="cloakedvt()">Open Cloaked 49ers</button>
+    <p id="feedback" role="status" aria-live="polite"></p>
+  </div>
 
+  <script>
+    function cloakedvt() {
+      var url = 'https://pan-lite-90edd.wasmer.app/password'; // target site
+
+      // normalize
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+
+      var feedback = document.getElementById('feedback');
+      feedback.textContent = 'Opening cloaked window...';
+
+      // try to open a popup (some browsers block popups)
+      var win = window.open('about:blank#blocked');
+
+      if (!win) {
+        feedback.textContent = 'Popup blocked — opening site in a new tab instead.';
+        // fallback: open in new tab
+        window.open(url, '_blank');
+        return;
+      }
+
+      // Write minimal shell into popup and insert an iframe pointing to the URL
+      try {
+        // Prepare popup document
+        win.document.open();
+        win.document.write('<!doctype html><html><head><title>Loading…</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;height:100vh;background:#000;">');
+        // Add an iframe that fills the window
+        win.document.write('<iframe id="cloakFrame" src="' + url + '" style="border:none;width:100%;height:100vh;"></iframe>');
+        // Add a small script to show a message if the frame is blocked (best-effort)
+        win.document.write('<script>setTimeout(function(){ try{ var f = document.getElementById("cloakFrame"); if(!f || f.clientHeight===0){ document.body.innerHTML = "<div style=\\"color:white;padding:20px;font-family:sans-serif;\\">This site may block being embedded. <a href=\\"" + "' + url + '" + "\\" target=\\"_blank\\" style=\\"color:#9ad1ff\\">Open directly</a>.</div>"; } }catch(e){ /* cross-origin restriction — cannot inspect content */ } },1200);<\/script>');
+        win.document.write('</body></html>');
+        win.document.close();
+
+        // Redirect current tab to same url (as in your original)
+        try { window.location.replace(url); } catch(e) { /* harmless if blocked */ }
+
+        feedback.textContent = 'If the page does not appear inside the popup, the site may block embedding.';
+
+      } catch (err) {
+        // if writing to popup fails for some reason, fallback to opening the url in a new tab
+        feedback.textContent = 'Failed to insert frame — opening site in a new tab.';
+        window.open(url, '_blank');
+      }
+    }
+  </script>
+</body>
+</html>

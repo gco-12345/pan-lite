@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cloak — 49ers</title>
+  <title>Cloak — Google Drive</title>
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/b/bd/Color_icon_blue.svg">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -54,13 +54,13 @@
   <div class="card" role="region" aria-labelledby="title">
     <h1 id="title">Cloak</h1>
     <hr>
-    <button class="primary" onclick="cloakedvt()">Open Cloaked 49ers</button>
+    <button class="primary" onclick="cloakedvt()">Cloak</button>
     <p id="feedback" role="status" aria-live="polite"></p>
   </div>
 
   <script>
     function cloakedvt() {
-      var url = 'https://pan-lite-90edd.wasmer.app/password'; // target site
+      var url = 'https://drive.google.com/drive/'; // target site (Google Drive)
 
       // normalize
       if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
@@ -80,23 +80,22 @@
 
       // Write minimal shell into popup and insert an iframe pointing to the URL
       try {
-        // Prepare popup document
         win.document.open();
         win.document.write('<!doctype html><html><head><title>Loading…</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;height:100vh;background:#000;">');
-        // Add an iframe that fills the window
         win.document.write('<iframe id="cloakFrame" src="' + url + '" style="border:none;width:100%;height:100vh;"></iframe>');
-        // Add a small script to show a message if the frame is blocked (best-effort)
-        win.document.write('<script>setTimeout(function(){ try{ var f = document.getElementById("cloakFrame"); if(!f || f.clientHeight===0){ document.body.innerHTML = "<div style=\\"color:white;padding:20px;font-family:sans-serif;\\">This site may block being embedded. <a href=\\"" + "' + url + '" + "\\" target=\\"_blank\\" style=\\"color:#9ad1ff\\">Open directly</a>.</div>"; } }catch(e){ /* cross-origin restriction — cannot inspect content */ } },1200);<\/script>');
+        // best-effort check for blocked framing (can't reliably inspect cross-origin contents)
+        win.document.write(
+          '<script>setTimeout(function(){ try{ var f = document.getElementById("cloakFrame"); if(!f || f.clientHeight===0){ document.body.innerHTML = "<div style=\\"color:white;padding:20px;font-family:sans-serif;\\">This site may block being embedded. <a href=\\"" + "' + url + '" + "\\" target=\\"_blank\\" style=\\"color:#9ad1ff\\">Open directly</a>.</div>"; } }catch(e){ /* cross-origin — ignore */ } },1200);<\/script>'
+        );
         win.document.write('</body></html>');
         win.document.close();
 
-        // Redirect current tab to same url (as in your original)
-        try { window.location.replace(url); } catch(e) { /* harmless if blocked */ }
+        // Redirect current tab to same url (optional behavior preserved from your original)
+        try { window.location.replace(url); } catch(e) { /* ignore if blocked */ }
 
-        feedback.textContent = 'If the page does not appear inside the popup, the site may block embedding.';
+        feedback.textContent = 'If the popup remains blank, the site likely blocks embedding — use the direct link in the popup or the new tab fallback.';
 
       } catch (err) {
-        // if writing to popup fails for some reason, fallback to opening the url in a new tab
         feedback.textContent = 'Failed to insert frame — opening site in a new tab.';
         window.open(url, '_blank');
       }

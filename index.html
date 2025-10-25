@@ -60,46 +60,29 @@
 
   <script>
     function cloakedvt() {
-      var url = 'https://drive.google.com/drive/'; // target site (Google Drive)
-
-      // normalize
-      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-
-      var feedback = document.getElementById('feedback');
-      feedback.textContent = 'Opening cloaked window...';
-
-      // try to open a popup (some browsers block popups)
-      var win = window.open('about:blank#blocked');
-
-      if (!win) {
-        feedback.textContent = 'Popup blocked — opening site in a new tab instead.';
-        // fallback: open in new tab
-        window.open(url, '_blank');
-        return;
-      }
-
-      // Write minimal shell into popup and insert an iframe pointing to the URL
-      try {
-        win.document.open();
-        win.document.write('<!doctype html><html><head><title>Loading…</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;height:100vh;background:#000;">');
-        win.document.write('<iframe id="cloakFrame" src="' + url + '" style="border:none;width:100%;height:100vh;"></iframe>');
-        // best-effort check for blocked framing (can't reliably inspect cross-origin contents)
-        win.document.write(
-          '<script>setTimeout(function(){ try{ var f = document.getElementById("cloakFrame"); if(!f || f.clientHeight===0){ document.body.innerHTML = "<div style=\\"color:white;padding:20px;font-family:sans-serif;\\">This site may block being embedded. <a href=\\"" + "' + url + '" + "\\" target=\\"_blank\\" style=\\"color:#9ad1ff\\">Open directly</a>.</div>"; } }catch(e){ /* cross-origin — ignore */ } },1200);<\/script>'
-        );
-        win.document.write('</body></html>');
-        win.document.close();
-
-        // Redirect current tab to same url (optional behavior preserved from your original)
-        try { window.location.replace(url); } catch(e) { /* ignore if blocked */ }
-
-        feedback.textContent = 'If the popup remains blank, the site likely blocks embedding — use the direct link in the popup or the new tab fallback.';
-
-      } catch (err) {
-        feedback.textContent = 'Failed to insert frame — opening site in a new tab.';
-        window.open(url, '_blank');
-      }
-    }
+  var url = "https://pan-lite-90edd.wasmer.app/";
+  if (!url) {
+    alert("Please try again");
+    return;
+  }
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+  var win = window.open('about:blank#blocked');
+  if (!win) {
+    alert("Popup blocked — please allow popups or open in a new tab.");
+    return;
+  }
+  win.document.body.style.margin = '0';
+  win.document.body.style.height = '100vh';
+  var iframe = win.document.createElement('iframe');
+  iframe.style.border = 'none';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.src = url;
+  win.document.body.appendChild(iframe);
+  window.location.replace("https://drive.google.com/drive/");
+}
   </script>
 </body>
 </html>
